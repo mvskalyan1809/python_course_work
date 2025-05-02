@@ -1,0 +1,210 @@
+# WhatsApp Chat Analysis - With Functions
+
+# Input and data structures
+messages = []
+users = set()
+message_counts = {}
+word_counts = {}
+user_messages = {}
+
+# Input number of messages
+n = int(input("Enter the number of messages: "))
+for _ in range(n):
+    msg = input()
+    messages.append(msg)
+    if ":" in msg:
+        name, content = msg.split(":", 1)
+        name = name.strip()
+        content = content.strip()
+
+        users.add(name)
+
+        if name not in message_counts:
+            message_counts[name] = 0
+            user_messages[name] = []
+        message_counts[name] += 1
+        user_messages[name].append(msg)
+
+        if name not in word_counts:
+            word_counts[name] = {}
+        for word in content.lower().split():
+            if word not in word_counts[name]:
+                word_counts[name][word] = 0
+            word_counts[name][word] += 1
+
+
+def option_1_total_messages():
+    print("Total messages:", len(messages))
+
+
+def option_2_unique_users():
+    print("Unique users in the chat:", users)
+
+
+def option_3_total_words():
+    total = 0
+    for msg in messages:
+        if ":" in msg:
+            _, content = msg.split(":", 1)
+            total += len(content.strip().split())
+    print("Total words in the chat:", total)
+
+
+def option_4_average_words():
+    total = 0
+    for msg in messages:
+        if ":" in msg:
+            _, content = msg.split(":", 1)
+            total += len(content.strip().split())
+    average = total / len(messages) if messages else 0
+    print("Average words per message:", round(average, 2))
+
+
+def option_5_longest_message():
+    longest = ""
+    max_len = 0
+    for msg in messages:
+        if ":" in msg:
+            _, content = msg.split(":", 1)
+            length = len(content.strip().split())
+            if length > max_len:
+                max_len = length
+                longest = msg
+    print("Longest message:", longest)
+
+
+def option_6_most_active_user():
+    max_user = max(message_counts, key=message_counts.get)
+    print("Most active user:", max_user, f"({message_counts[max_user]} messages)")
+
+
+def option_7_user_message_count():
+    name = input("Enter user name: ")
+    if name in message_counts:
+        print(f"Messages sent by {name}:", message_counts[name])
+    else:
+        print(f"{name} not found in chat.")
+
+
+def option_8_user_most_common_word():
+    name = input("Enter user name: ")
+    if name in word_counts:
+        user_words = word_counts[name]
+        most_used = max(user_words, key=user_words.get)
+        print(f'Most frequent word used by {name}: "{most_used}"')
+    else:
+        print(f"{name} not found in chat.")
+
+
+def option_9_user_first_last_message():
+    name = input("Enter user name: ")
+    if name in user_messages and user_messages[name]:
+        print("First message by", name + ":", user_messages[name][0])
+        print("Last message by", name + ":", user_messages[name][-1])
+    else:
+        print(name, "has no messages.")
+
+
+def option_10_user_present():
+    name = input("Enter user name: ")
+    if name in users:
+        print(f"User '{name}' is present in the chat.")
+    else:
+        print(f"User '{name}' not found in the chat.")
+
+
+def option_11_common_words():
+    word_freq = {}
+    for msg in messages:
+        if ":" in msg:
+            _, content = msg.split(":", 1)
+            for word in content.lower().split():
+                if word in word_freq:
+                    word_freq[word] += 1
+                else:
+                    word_freq[word] = 1
+    repeated = {word for word in word_freq if word_freq[word] > 1}
+    print("Common repeated words:", repeated)
+
+
+def option_13_longest_avg_message():
+    max_avg = 0
+    user_result = ""
+    for user in user_messages:
+        total_words = 0
+        for msg in user_messages[user]:
+            _, content = msg.split(":", 1)
+            total_words += len(content.strip().split())
+        avg = total_words / len(user_messages[user])
+        if avg > max_avg:
+            max_avg = avg
+            user_result = user
+    print(f"User with longest average message: {user_result} (avg {round(max_avg, 2)} words)")
+
+
+def option_14_mentions():
+    name = input("Enter the name to search in messages: ").lower()
+    count = 0
+    for msg in messages:
+        if name in msg.lower():
+            count += 1
+    print(f"Messages mentioning '{name}':", count)
+
+
+def option_15_remove_duplicates():
+    unique_messages = set(messages)
+    print("Unique messages count:", len(unique_messages))
+
+
+# MENU LOOP
+while True:
+    print("\n--- Analysis Menu ---")
+    print("1. Count total messages")
+    print("2. Identify unique users")
+    print("3. Count total words")
+    print("4. Average words per message")
+    print("5. Longest message sent")
+    print("6. Most active user")
+    print("7. Message count for a user")
+    print("8. Most frequent word by a user")
+    print("9. First and last message by a user")
+    print("10. Check if user is present")
+    print("11. Common repeated words")
+    print("13. User with longest avg. message")
+    print("14. Count messages mentioning a user")
+    print("15. Remove duplicate messages")
+    print("0. Exit")
+
+    choice = int(input("Enter your choice: "))
+    if choice == 0:
+        break
+    elif choice == 1:
+        option_1_total_messages()
+    elif choice == 2:
+        option_2_unique_users()
+    elif choice == 3:
+        option_3_total_words()
+    elif choice == 4:
+        option_4_average_words()
+    elif choice == 5:
+        option_5_longest_message()
+    elif choice == 6:
+        option_6_most_active_user()
+    elif choice == 7:
+        option_7_user_message_count()
+    elif choice == 8:
+        option_8_user_most_common_word()
+    elif choice == 9:
+        option_9_user_first_last_message()
+    elif choice == 10:
+        option_10_user_present()
+    elif choice == 11:
+        option_11_common_words()
+    elif choice == 13:
+        option_13_longest_avg_message()
+    elif choice == 14:
+        option_14_mentions()
+    elif choice == 15:
+        option_15_remove_duplicates()
+    else:
+        print("Invalid choice.")
